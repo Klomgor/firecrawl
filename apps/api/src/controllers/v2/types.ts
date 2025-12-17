@@ -730,6 +730,7 @@ export const agentRequestSchema = z.strictObject({
     ),
   origin: z.string().optional().prefault("api"),
   integration: integrationSchema.optional().transform(val => val || null),
+  overrideWhitelist: z.string().optional(),
 });
 
 export type AgentRequest = z.infer<typeof agentRequestSchema>;
@@ -740,6 +741,13 @@ const scrapeRequestSchemaBase = baseScrapeOptions.extend({
   origin: z.string().optional().prefault("api"),
   integration: integrationSchema.optional().transform(val => val || null),
   zeroDataRetention: z.boolean().optional(),
+  __agentInterop: z
+    .object({
+      auth: z.string(),
+      requestId: z.string(),
+      shouldBill: z.boolean(),
+    })
+    .optional(),
 });
 
 export const scrapeRequestSchema = strictWithMessage(scrapeRequestSchemaBase)
